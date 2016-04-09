@@ -12,6 +12,9 @@
 <link
 	href="${pageContext.request.contextPath}/static/images/mini_logo.ico"
 	rel="SHORTCUT ICON">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap.min.css">
+<link href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="${pageContext.request.contextPath}/static/css/blog.css" rel="stylesheet">
 <link
 	href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -80,11 +83,11 @@
 		<nav id="topnav" class="f_r">
 			<ul>
 				<a href="${pageContext.request.contextPath}/index.html">首页</a>
-				<a href="news.html" target="_blank">关于我</a>
 				<a href="p.html" target="_blank">文章</a>
 				<a href="a.html" target="_blank">心情</a>
 				<a href="c.html" target="_blank">相册</a>
 				<a href="b.html" target="_blank">留言</a>
+				<a href="news.html" target="_blank">关于我</a>
 			</ul>
 			<script src="js/nav.js"></script>
 		</nav>

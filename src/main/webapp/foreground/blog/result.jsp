@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<link href="${pageContext.request.contextPath}/static/css/blog.css" rel="stylesheet">
 <div class="data_list">
 	<div class="data_list_title">
 		<img class="f_l" src="${pageContext.request.contextPath}/static/images/search_icon.png" />

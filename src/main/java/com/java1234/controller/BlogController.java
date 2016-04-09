@@ -64,7 +64,7 @@ public class BlogController {
 		mav.addObject("commentList", commentService.list(map)); 
 		mav.addObject("pageCode", this.genUpAndDownPageCode(blogService.getLastBlog(id),blogService.getNextBlog(id),request.getServletContext().getContextPath()));
 		mav.addObject("mainPage", "foreground/blog/view.jsp");
-		mav.addObject("pageTitle",blog.getTitle()+"_Java开源博客系统");
+		mav.addObject("pageTitle",blog.getTitle()+"_Dong博客系统");
 		mav.setViewName("index");
 		return mav;
 	}

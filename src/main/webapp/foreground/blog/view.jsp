@@ -8,8 +8,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap.min.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/bootstrap3/css/bootstrap-theme.min.css">
-<link href="${pageContext.request.contextPath}/static/css/blog.css" rel="stylesheet">
+<style type="text/css">
+a:hover{text-decoration:none}
+.xlwb,.txwb,.rss,.wx{font-size:10px}
+</style>
 <script type="text/javascript">
 	function loadimage(){
 		document.getElementById("randImage").src="${pageContext.request.contextPath}/image.jsp?"+Math.random();
@@ -74,7 +76,7 @@
 </div>
 <div class="data_list">
 	<div class="data_list_title">
-		<img src="${pageContext.request.contextPath}/static/images/comment_icon.png"/>
+		<img class="f_l" src="${pageContext.request.contextPath}/static/images/comment_icon.png"/>
 		评论信息    
 		<c:if test="${commentList.size()>10}">
 			<a href="javascript:showOtherComment()" style="float: right;padding-right: 40px;">显示所有评论</a>
@@ -109,7 +111,7 @@
 
 <div class="data_list" >
 	<div class="data_list_title">
-		<img src="${pageContext.request.contextPath}/static/images/publish_comment_icon.png"/>
+		<img class="f_l" src="${pageContext.request.contextPath}/static/images/publish_comment_icon.png"/>
 		发表评论
 	</div>
 	<div class="publish_comment">
