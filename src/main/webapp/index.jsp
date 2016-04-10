@@ -84,8 +84,8 @@
 			<ul>
 				<a href="${pageContext.request.contextPath}/index.html">首页</a>
 				<a href="p.html" target="_blank">文章</a>
-				<a href="a.html" target="_blank">心情</a>
-				<a href="c.html" target="_blank">相册</a>
+				<a href="a.html" target="_blank">相册</a>
+				<a href="c.html" target="_blank">资源</a>
 				<a href="b.html" target="_blank">留言</a>
 				<a href="news.html" target="_blank">关于我</a>
 			</ul>
