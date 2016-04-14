@@ -1,6 +1,8 @@
 package com.dong.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -11,14 +13,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.dong.entity.Blog;
-import com.dong.entity.BlogType;
-import com.dong.entity.Blogger;
-import com.dong.entity.Link;
-import com.dong.service.BlogService;
-import com.dong.service.BlogTypeService;
-import com.dong.service.BloggerService;
-import com.dong.service.LinkService;
+import com.dong.application.dto.BlogDTO;
+import com.dong.application.dto.BlogTypeDTO;
+import com.dong.application.dto.LinkDTO;
+import com.dong.service.BlogApplication;
+import com.dong.service.BlogTypeApplication;
+import com.dong.service.LinkApplication;
 
 /**
  * 初始化组件 把博主信息 根据博客类别分类信息 根据日期归档分类信息 存放到application中，用以提供页面请求性能
@@ -37,7 +37,25 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		ServletContext application=servletContextEvent.getServletContext();
-		BloggerService bloggerService=(BloggerService) applicationContext.getBean("bloggerService");
+		
+		BlogApplication blogApplication = (BlogApplication) applicationContext.getBean("blogApplication");
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("orderType", "clickHit");
+		List<BlogDTO> clickBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询点击量最高的前六篇博客
+		application.setAttribute("clickBlogs", clickBlogs);
+		params.put("orderType", "releaseDate");
+		List<BlogDTO> dateBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询最新的六篇博客
+		application.setAttribute("dateBlogs", dateBlogs);
+		
+		LinkApplication linkApplication = (LinkApplication) applicationContext.getBean("linkApplication");
+		List<LinkDTO> linkList = linkApplication.findAll(); // 查询所有的友情链接信息
+		application.setAttribute("linkList", linkList);
+		
+		BlogTypeApplication blogTypeApplication = (BlogTypeApplication) applicationContext.getBean("blogTypeApplication");
+		List<BlogTypeDTO> typeList = blogTypeApplication.findAll(); // 查询博客类别以及博客的数量
+		application.setAttribute("blogTypeCountList", typeList);
+		
+		/*BloggerService bloggerService=(BloggerService) applicationContext.getBean("bloggerService");
 		Blogger blogger=bloggerService.find(); // 查询博主信息
 		blogger.setPassword(null);
 		application.setAttribute("blogger", blogger);
@@ -52,7 +70,7 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 		
 		LinkService linkService=(LinkService) applicationContext.getBean("linkService");
 		List<Link> linkList=linkService.list(null); // 查询所有的友情链接信息
-		application.setAttribute("linkList", linkList);
+		application.setAttribute("linkList", linkList);*/
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {

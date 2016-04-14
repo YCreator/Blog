@@ -11,8 +11,10 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import com.dong.application.BloggerService;
+import com.dong.application.dto.BloggerDTO;
 import com.dong.entity.Blogger;
-import com.dong.service.BloggerService;
+import com.dong.service.BloggerApplication;
 
 /**
  * 自定义Realm
@@ -21,8 +23,10 @@ import com.dong.service.BloggerService;
  */
 public class MyRealm extends AuthorizingRealm{
 
+	
+	//private BloggerService bloggerService;
 	@Resource
-	private BloggerService bloggerService;
+	private BloggerApplication bloggerApplication;
 	
 	/**
 	 * 为当限前登录的用户授予角色和权
@@ -38,14 +42,22 @@ public class MyRealm extends AuthorizingRealm{
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		String userName=(String)token.getPrincipal();
-		Blogger blogger=bloggerService.getByUserName(userName);
+		BloggerDTO bloggerDTO = bloggerApplication.findByUsername(userName);
+		if (bloggerDTO != null) {
+			SecurityUtils.getSubject().getSession().setAttribute("currentUser", bloggerDTO); // 当前用户信息存到session中
+			AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(bloggerDTO.getUserName(),bloggerDTO.getPassword(),"xx");
+			return authcInfo;
+		} else {
+			return null;
+		}
+		/*Blogger blogger=bloggerService.getByUserName(userName);
 		if(blogger!=null){
 			SecurityUtils.getSubject().getSession().setAttribute("currentUser", blogger); // 当前用户信息存到session中
 			AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(blogger.getUserName(),blogger.getPassword(),"xx");
 			return authcInfo;
 		}else{
 			return null;				
-		}
+		}*/
 	}
 
 }

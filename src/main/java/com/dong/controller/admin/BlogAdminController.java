@@ -12,10 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dong.application.BlogService;
 import com.dong.entity.Blog;
 import com.dong.entity.PageBean;
 import com.dong.lucene.BlogIndex;
-import com.dong.service.BlogService;
 import com.dong.util.ResponseUtil;
 import com.dong.util.StringUtil;
 
@@ -33,7 +33,7 @@ import net.sf.json.JsonConfig;
 @RequestMapping("/admin/blog")
 public class BlogAdminController {
 
-	@Resource
+	/*@Resource*/
 	private BlogService blogService;
 	
 	// ²©¿ÍË÷Òý

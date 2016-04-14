@@ -11,10 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dong.application.BlogService;
+import com.dong.application.BlogTypeService;
 import com.dong.entity.BlogType;
 import com.dong.entity.PageBean;
-import com.dong.service.BlogService;
-import com.dong.service.BlogTypeService;
 import com.dong.util.ResponseUtil;
 
 import net.sf.json.JSONArray;
@@ -29,10 +29,10 @@ import net.sf.json.JSONObject;
 @RequestMapping("/admin/blogType")
 public class BlogTypeAdminController {
 
-	@Resource
+	/*@Resource*/
 	private BlogTypeService blogTypeService;
 	
-	@Resource
+	/*@Resource*/
 	private BlogService blogService;
 	
 	/**

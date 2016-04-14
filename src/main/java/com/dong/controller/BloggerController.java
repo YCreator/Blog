@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.dong.application.BloggerService;
 import com.dong.entity.Blogger;
-import com.dong.service.BloggerService;
 import com.dong.util.CryptographyUtil;
 
 /**
@@ -23,7 +23,7 @@ import com.dong.util.CryptographyUtil;
 @RequestMapping("/blogger")
 public class BloggerController {
 
-	@Resource
+	/*@Resource*/
 	private BloggerService bloggerService;
 	
 	/**

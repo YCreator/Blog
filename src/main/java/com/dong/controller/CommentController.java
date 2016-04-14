@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dong.application.BlogService;
+import com.dong.application.CommentService;
 import com.dong.entity.Blog;
 import com.dong.entity.Comment;
-import com.dong.service.BlogService;
-import com.dong.service.CommentService;
 import com.dong.util.ResponseUtil;
 import com.dong.util.StringUtil;
 
@@ -27,10 +27,10 @@ import net.sf.json.JSONObject;
 @RequestMapping("/comment")
 public class CommentController {
 	
-	@Resource
+	/*@Resource*/
 	private CommentService commentService;
 	
-	@Resource
+	/*@Resource*/
 	private BlogService blogService;
 	
 	/**

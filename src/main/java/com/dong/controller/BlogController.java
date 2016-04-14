@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.dong.application.BlogService;
+import com.dong.application.CommentService;
 import com.dong.entity.Blog;
 import com.dong.lucene.BlogIndex;
-import com.dong.service.BlogService;
-import com.dong.service.CommentService;
 import com.dong.util.StringUtil;
 
 /**
@@ -29,10 +29,10 @@ import com.dong.util.StringUtil;
 @RequestMapping("/blog")
 public class BlogController {
 
-	@Resource
+	/*@Resource*/
 	private BlogService blogService;
 	
-	@Resource
+	/*@Resource*/
 	private CommentService commentService;
 	
 	// ²©¿ÍË÷Òý

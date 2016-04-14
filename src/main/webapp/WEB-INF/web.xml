@@ -48,10 +48,16 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<!-- Spring监听器 -->
-	<listener>
+	<!-- <listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener> -->
+	<!-- Spring监听器  提供Ioc容器实例给dddlib里的 InstanceProvider从而初始化 InstanceProvider
+		,进而让充当IoC容器的门面d的InstanceFactory 能够-获得部署在IoC容器中的Bean的实例来提供spring注入 -->
+	<listener>
+		<listener-class>org.dayatang.ioc.spring.webapp.DayatangContextLoaderListener</listener-class>
 	</listener>
 
+	<!-- 自定义初始化监听器 -->
 	<listener>
 		<listener-class>com.dong.service.impl.InitComponent</listener-class>
 	</listener>
@@ -75,5 +81,18 @@
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.html</url-pattern>
 	</servlet-mapping>
+	
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/WEB-INF/pages/error/500.html</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/pages/error/500.html</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/pages/error/404.jsp</location>
+	</error-page>
 
 </web-app>

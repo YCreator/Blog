@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.dayatang.utils.Page;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,11 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.dong.application.BlogService;
+import com.dong.application.dto.BlogDTO;
+import com.dong.application.dto.BlogTypeDTO;
 import com.dong.entity.Blog;
 import com.dong.entity.PageBean;
-import com.dong.service.BlogService;
+import com.dong.service.BlogApplication;
 import com.dong.util.PageUtil;
 import com.dong.util.StringUtil;
+import com.google.gson.Gson;
 
 /**
  * 主页Controller
@@ -31,8 +36,10 @@ import com.dong.util.StringUtil;
 @RequestMapping("/")
 public class IndexController {
 
+	/*@Resource
+	private BlogService blogService;*/
 	@Resource
-	private BlogService blogService;
+	private BlogApplication blogApplication;
 	
 	
 	/**
@@ -52,8 +59,23 @@ public class IndexController {
 		map.put("size", pageBean.getPageSize());
 		map.put("typeId", typeId);
 		map.put("releaseDateStr", releaseDateStr);
-		List<Blog> blogList=blogService.list(map);
-		for(Blog blog:blogList){
+		//List<Blog> blogList=blogService.list(map);
+		BlogDTO dto = new BlogDTO();
+		Page<BlogDTO> blogList=blogApplication.pageQuery(dto, pageBean.getStart(), pageBean.getPageSize());
+		for (BlogDTO d : blogList.getData()) {
+			List<String> imagesList=d.getImagesList();
+			String blogInfo=d.getContent();
+			Document doc=Jsoup.parse(blogInfo);
+			Elements jpgs=doc.select("img[src$=.jpg]"); //　查找扩展名是jpg的图片
+			for(int i=0;i<jpgs.size();i++){
+				Element jpg=jpgs.get(i);
+				imagesList.add(jpg.toString());
+				if(i==2){
+					break;
+				}
+			}
+		}
+		/*for(Blog blog:blogList){
 			List<String> imagesList=blog.getImagesList();
 			String blogInfo=blog.getContent();
 			Document doc=Jsoup.parse(blogInfo);
@@ -65,8 +87,8 @@ public class IndexController {
 					break;
 				}
 			}
-		}
-		mav.addObject("blogList", blogList);
+		}*/
+		mav.addObject("blogList", blogList.getData());
 		StringBuffer param=new StringBuffer(); // 查询参数
 		if(StringUtil.isNotEmpty(typeId)){
 			param.append("typeId="+typeId+"&");
@@ -75,7 +97,7 @@ public class IndexController {
 			param.append("releaseDateStr="+releaseDateStr+"&");
 		}
 		mav.addObject("test","hello");
-		mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html", blogService.getTotal(map), Integer.parseInt(page), 10, param.toString()));
+		//mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html", blogService.getTotal(map), Integer.parseInt(page), 10, param.toString()));
 		mav.addObject("mainPage", "foreground/blog/list.jsp");
 		mav.addObject("pageTitle","Java开源博客系统");
 		mav.setViewName("mainTemp");
@@ -95,7 +117,7 @@ public class IndexController {
 		mav.setViewName("mainTemp");
 		return mav;
 	}
-	
+	/*
 	@RequestMapping("/index")
 	public ModelAndView staticIndex(@RequestParam(value="page",required=false)String page,@RequestParam(value="typeId",required=false)String typeId,@RequestParam(value="releaseDateStr",required=false)String releaseDateStr,HttpServletRequest request) throws Exception {
 		ModelAndView mav=new ModelAndView();
@@ -139,6 +161,39 @@ public class IndexController {
 			param.append("releaseDateStr="+releaseDateStr+"&");
 		}
 		mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html", blogService.getTotal(map), Integer.parseInt(page), 10, param.toString()));
+		mav.addObject("pageTitle","Dong博客系统");
+		mav.addObject("mainPage", "foreground/myblog/home.jsp");
+		mav.addObject("listPage", "list.jsp");
+		mav.setViewName("index");
+		return mav;
+	}*/
+	
+	@RequestMapping("/index")
+	public ModelAndView staticIndex(@RequestParam(value="page",required=false)String page,@RequestParam(value="typeId",required=false)String typeId,@RequestParam(value="releaseDateStr",required=false)String releaseDateStr,HttpServletRequest request) throws Exception {
+		ModelAndView mav=new ModelAndView();
+		if(StringUtil.isEmpty(page)){
+			page="1";
+		}
+		PageBean pageBean=new PageBean(Integer.parseInt(page),10);
+		BlogDTO dto = new BlogDTO();
+		if (typeId != null) {
+			BlogTypeDTO typeDTO = new BlogTypeDTO();
+			typeDTO.setId(Long.valueOf(typeId));
+			dto.setBlogTypeDTO(typeDTO);
+		}
+		
+		Page<BlogDTO> blogList=blogApplication.pageQuery(dto, pageBean.getStart(), pageBean.getPageSize());
+		mav.addObject("blogList", blogList.getData());
+		
+		StringBuffer param=new StringBuffer(); // 查询参数
+		if(StringUtil.isNotEmpty(typeId)){
+			param.append("typeId="+typeId+"&");
+		}
+		if(StringUtil.isNotEmpty(releaseDateStr)){
+			param.append("releaseDateStr="+releaseDateStr+"&");
+		}
+		mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html",blogApplication
+				.count(typeId != null ? Long.valueOf(typeId) : null), Integer.parseInt(page), 10, param.toString()));
 		mav.addObject("pageTitle","Dong博客系统");
 		mav.addObject("mainPage", "foreground/myblog/home.jsp");
 		mav.addObject("listPage", "list.jsp");

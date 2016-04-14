@@ -11,9 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dong.application.LinkService;
 import com.dong.entity.Link;
 import com.dong.entity.PageBean;
-import com.dong.service.LinkService;
 import com.dong.util.ResponseUtil;
 
 import net.sf.json.JSONArray;
@@ -28,7 +28,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/admin/link")
 public class LinkAdminController {
 	
-	@Resource
+	/*@Resource*/
 	private LinkService linkService;
 	
 	/**

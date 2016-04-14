@@ -11,9 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.dong.application.CommentService;
 import com.dong.entity.Comment;
 import com.dong.entity.PageBean;
-import com.dong.service.CommentService;
 import com.dong.util.ResponseUtil;
 
 import net.sf.json.JSONArray;
@@ -29,7 +29,7 @@ import net.sf.json.JsonConfig;
 @RequestMapping("/admin/comment")
 public class CommentAdminController {
 
-	@Resource
+	/*@Resource*/
 	private CommentService commentService;
 	
 	/**

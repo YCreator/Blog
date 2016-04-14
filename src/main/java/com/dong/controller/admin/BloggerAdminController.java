@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.dong.application.BloggerService;
 import com.dong.entity.Blogger;
-import com.dong.service.BloggerService;
 import com.dong.util.CryptographyUtil;
 import com.dong.util.DateUtil;
 import com.dong.util.ResponseUtil;
@@ -29,7 +29,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/admin/blogger")
 public class BloggerAdminController {
 
-	@Resource
+	/*@Resource*/
 	private BloggerService bloggerService;
 	
 	/**

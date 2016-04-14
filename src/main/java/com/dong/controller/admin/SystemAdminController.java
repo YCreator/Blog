@@ -11,14 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.dong.application.BlogService;
+import com.dong.application.BlogTypeService;
+import com.dong.application.BloggerService;
+import com.dong.application.LinkService;
 import com.dong.entity.Blog;
 import com.dong.entity.BlogType;
 import com.dong.entity.Blogger;
 import com.dong.entity.Link;
-import com.dong.service.BlogService;
-import com.dong.service.BlogTypeService;
-import com.dong.service.BloggerService;
-import com.dong.service.LinkService;
 import com.dong.util.ResponseUtil;
 
 import net.sf.json.JSONObject;
@@ -32,16 +32,16 @@ import net.sf.json.JSONObject;
 @RequestMapping("/admin/system")
 public class SystemAdminController {
 
-	@Resource
+	/*@Resource*/
 	private BloggerService bloggerService;
 	
-	@Resource
+	/*@Resource*/
 	private BlogTypeService blogTypeService;
 	
-	@Resource
+	/*@Resource*/
 	private BlogService blogService;
 	
-	@Resource
+	/*@Resource*/
 	private LinkService linkService;
 	
 	/**

@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * ²©¿ÍÊµÌå
  * @author Administrator
