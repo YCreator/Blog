@@ -18,7 +18,14 @@ public class BlogTypeApplicationImpl extends BaseApplicationImpl implements Blog
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogTypeDTO get(Long pk) {
-		return null;
+		BlogTypeDTO dto = new BlogTypeDTO();
+		BlogType blogType = BlogType.load(BlogType.class, pk);
+		try {
+			BeanUtils.copyProperties(dto, blogType);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return dto;
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -38,23 +45,36 @@ public class BlogTypeApplicationImpl extends BaseApplicationImpl implements Blog
 	}
 
 	public BlogTypeDTO save(BlogTypeDTO t) {
-		// TODO Auto-generated method stub
-		return null;
+		BlogType bt = new BlogType();
+		try {
+			BeanUtils.copyProperties(bt, t);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		bt.save();
+		t.setId(bt.getId());
+		return t;
 	}
 
 	public void update(BlogTypeDTO t) {
-		// TODO Auto-generated method stub
-		
+		BlogType bt = BlogType.get(BlogType.class, t.getId());
+		try {
+			BeanUtils.copyProperties(bt, t);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}	
 	}
 
 	public void remove(Long pk) {
-		// TODO Auto-generated method stub
+		removes(new Long[]{pk});
 		
 	}
 
 	public void removes(Long[] pks) {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < pks.length; i++) {
+			BlogType bt = BlogType.load(BlogType.class, pks[i]);
+			bt.remove();
+		}
 	}
 
 }

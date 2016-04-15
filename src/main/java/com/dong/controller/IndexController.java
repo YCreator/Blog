@@ -17,15 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.dong.application.BlogService;
 import com.dong.application.dto.BlogDTO;
 import com.dong.application.dto.BlogTypeDTO;
-import com.dong.entity.Blog;
 import com.dong.entity.PageBean;
 import com.dong.service.BlogApplication;
 import com.dong.util.PageUtil;
 import com.dong.util.StringUtil;
-import com.google.gson.Gson;
 
 /**
  * 主页Controller
@@ -168,6 +165,15 @@ public class IndexController {
 		return mav;
 	}*/
 	
+	/**
+	 * 请求主页
+	 * @param page
+	 * @param typeId
+	 * @param releaseDateStr
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/index")
 	public ModelAndView staticIndex(@RequestParam(value="page",required=false)String page,@RequestParam(value="typeId",required=false)String typeId,@RequestParam(value="releaseDateStr",required=false)String releaseDateStr,HttpServletRequest request) throws Exception {
 		ModelAndView mav=new ModelAndView();
@@ -176,13 +182,12 @@ public class IndexController {
 		}
 		PageBean pageBean=new PageBean(Integer.parseInt(page),10);
 		BlogDTO dto = new BlogDTO();
-		if (typeId != null) {
+		if (StringUtil.isNotEmpty(typeId)) {
 			BlogTypeDTO typeDTO = new BlogTypeDTO();
 			typeDTO.setId(Long.valueOf(typeId));
 			dto.setBlogTypeDTO(typeDTO);
 		}
-		
-		Page<BlogDTO> blogList=blogApplication.pageQuery(dto, pageBean.getStart(), pageBean.getPageSize());
+		Page<BlogDTO> blogList=blogApplication.pageQuery(dto, pageBean.getPage(), pageBean.getPageSize());
 		mav.addObject("blogList", blogList.getData());
 		
 		StringBuffer param=new StringBuffer(); // 查询参数
@@ -193,7 +198,7 @@ public class IndexController {
 			param.append("releaseDateStr="+releaseDateStr+"&");
 		}
 		mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html",blogApplication
-				.count(typeId != null ? Long.valueOf(typeId) : null), Integer.parseInt(page), 10, param.toString()));
+				.count(typeId != null && !typeId.equals("") ? Long.valueOf(typeId) : null), Integer.parseInt(page), 10, param.toString()));
 		mav.addObject("pageTitle","Dong博客系统");
 		mav.addObject("mainPage", "foreground/myblog/home.jsp");
 		mav.addObject("listPage", "list.jsp");

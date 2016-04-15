@@ -1,9 +1,11 @@
 package com.dong.service.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.dayatang.utils.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,23 +41,59 @@ public class LinkApplicationImpl extends BaseApplicationImpl implements LinkAppl
 	}
 
 	public LinkDTO save(LinkDTO t) {
-		// TODO Auto-generated method stub
-		return null;
+		Link link = new Link();
+		try {
+			BeanUtils.copyProperties(link, t);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		link.save();
+		t.setId(link.getId());
+		return t;
 	}
 
 	public void update(LinkDTO t) {
-		// TODO Auto-generated method stub
-		
+		Link link = Link.get(Link.class, t.getId());
+		try {
+			BeanUtils.copyProperties(link, t);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void remove(Long pk) {
-		// TODO Auto-generated method stub
+		removes(new Long[]{pk});
 		
 	}
 
 	public void removes(Long[] pks) {
-		// TODO Auto-generated method stub
+		for (int i = 0; i < pks.length; i ++) {
+			Link link = Link.load(Link.class, pks[i]);
+			link.remove();
+		}
+	}
+
+	public Page<LinkDTO> getPage(int currentPage, int pageSize) {
+		List<LinkDTO> dtos = new ArrayList<LinkDTO>();
+		@SuppressWarnings("unchecked")
+		Page<Link> page = this.getQueryChannelService()
+				.createJpqlQuery("select _link from Link _link").setPage(currentPage, pageSize).pagedList();
+		List<Link> list = page.getData();
+		for (Link link : list) {
+			LinkDTO dto = new LinkDTO();
+			try {
+				BeanUtils.copyProperties(dto, link);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			dtos.add(dto);
+		}
+		return new Page<LinkDTO>(page.getStart(), page.getResultCount(), pageSize, dtos);
+	}
+
+	public int getTotal() {
 		
+		return ((BigInteger)this.getQueryChannelService().createJpqlQuery("select count(*) from Link _link").list().get(0)).intValue();
 	}
 
 }

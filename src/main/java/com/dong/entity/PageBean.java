@@ -19,7 +19,7 @@ public class PageBean {
 	}
 	
 	public int getPage() {
-		return page;
+		return page > 0 ? page - 1 : 0;
 	}
 	public void setPage(int page) {
 		this.page = page;

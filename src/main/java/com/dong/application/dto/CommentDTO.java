@@ -12,7 +12,7 @@ public class CommentDTO {
 	private Long id; // 编号
 	private String userIp; // 用户IP
 	private String content; // 评论内容
-	private BlogDTO blog; // 被评论的博客
+	private Long blogId; // 被评论的博客
 	private Date commentDate; // 评论日期
 	private Integer state; // 审核状态  0 待审核 1 审核通过 2 审核未通过
 	
@@ -34,11 +34,11 @@ public class CommentDTO {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public BlogDTO getBlog() {
-		return blog;
+	public Long getBlogId() {
+		return blogId;
 	}
-	public void setBlog(BlogDTO blog) {
-		this.blog = blog;
+	public void setBlogId(Long blogId) {
+		this.blogId = blogId;
 	}
 	public Date getCommentDate() {
 		return commentDate;

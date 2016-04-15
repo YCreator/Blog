@@ -16,8 +16,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dong.application.BlogService;
 import com.dong.application.CommentService;
+import com.dong.application.dto.BlogDTO;
+import com.dong.application.dto.CommentDTO;
 import com.dong.entity.Blog;
 import com.dong.lucene.BlogIndex;
+import com.dong.service.BlogApplication;
+import com.dong.service.CommentApplication;
 import com.dong.util.StringUtil;
 
 /**
@@ -29,11 +33,17 @@ import com.dong.util.StringUtil;
 @RequestMapping("/blog")
 public class BlogController {
 
-	/*@Resource*/
-	private BlogService blogService;
+	@Resource
+	private BlogApplication blogApplication;
+	
+	@Resource
+	private CommentApplication commentApplication;
 	
 	/*@Resource*/
-	private CommentService commentService;
+	//private BlogService blogService;
+	
+	/*@Resource*/
+	//private CommentService commentService;
 	
 	// 博客索引
 	private BlogIndex blogIndex=new BlogIndex();
@@ -45,26 +55,31 @@ public class BlogController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/articles/{id}")
-	public ModelAndView details(@PathVariable("id") Integer id,HttpServletRequest request)throws Exception{
+	public ModelAndView details(@PathVariable("id") Long id,HttpServletRequest request)throws Exception{
 		ModelAndView mav=new ModelAndView();
-		Blog blog=blogService.findById(id);
-		String keyWords=blog.getKeyWord();
+		//Blog blog=blogService.findById(id);
+		BlogDTO blogDTO = blogApplication.get(id);
+	//	String keyWords=blog.getKeyWord();
+		String keyWords=blogDTO.getKeyWord();
 		if(StringUtil.isNotEmpty(keyWords)){
 			String arr[]=keyWords.split(" ");
 			mav.addObject("keyWords",StringUtil.filterWhite(Arrays.asList(arr)));			
 		}else{
 			mav.addObject("keyWords",null);			
 		}
-		mav.addObject("blog", blog);
-		blog.setClickHit(blog.getClickHit()+1); // 博客点击次数加1
-		blogService.update(blog);
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("blogId", blog.getId());
+		mav.addObject("blog", blogDTO);
+		blogDTO.setClickHit(blogDTO.getClickHit()+1); // 博客点击次数加1
+		blogApplication.update(blogDTO);
+		CommentDTO commentDTO = new CommentDTO();
+		commentDTO.setBlogId(blogDTO.getId());
+		commentDTO.setState(1); // 查询审核通过的评论
+		/*Map<String,Object> map=new HashMap<String,Object>();
+		map.put("blogId", blogDTO.getId());
 		map.put("state", 1); // 查询审核通过的评论
-		mav.addObject("commentList", commentService.list(map)); 
-		mav.addObject("pageCode", this.genUpAndDownPageCode(blogService.getLastBlog(id),blogService.getNextBlog(id),request.getServletContext().getContextPath()));
+*/		mav.addObject("commentList", commentApplication.getPage(commentDTO, 0, 100).getData()); 
+		mav.addObject("pageCode", this.genUpAndDownPageCode(blogApplication.getLastBlog(id),blogApplication.getNextBlog(id),request.getServletContext().getContextPath()));
 		mav.addObject("mainPage", "foreground/blog/view.jsp");
-		mav.addObject("pageTitle",blog.getTitle()+"_Dong博客系统");
+		mav.addObject("pageTitle",blogDTO.getTitle()+"_Dong博客系统");
 		mav.setViewName("index");
 		return mav;
 	}
@@ -99,7 +114,7 @@ public class BlogController {
 	 * @param nextBlog
 	 * @return
 	 */
-	private String genUpAndDownPageCode(Blog lastBlog,Blog nextBlog,String projectContext){
+	private String genUpAndDownPageCode(BlogDTO lastBlog,BlogDTO nextBlog,String projectContext){
 		StringBuffer pageCode=new StringBuffer();
 		if(lastBlog==null || lastBlog.getId()==null){
 			pageCode.append("<p>上一篇：没有了</p>");

@@ -15,16 +15,7 @@ import com.dong.service.BloggerApplication;
 
 @Service("bloggerApplication")
 @Transactional
-public class BloggerApplicationImpl implements  BloggerApplication {
-
-	private QueryChannelService queryChannel;
-	
-	public QueryChannelService getQueryChannelService() {
-		if (queryChannel == null) {
-			queryChannel = InstanceFactory.getInstance(QueryChannelService.class, "queryChannel");
-		}
-		return queryChannel;
-	}
+public class BloggerApplicationImpl extends BaseApplicationImpl implements  BloggerApplication {
 	
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BloggerDTO get(Long pk) {
