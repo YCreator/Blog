@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.dong.application.BloggerService;
+import com.dong.application.dto.BloggerDTO;
 import com.dong.entity.Blogger;
 import com.dong.util.CryptographyUtil;
 
@@ -33,9 +34,9 @@ public class BloggerController {
 	 * @return
 	 */
 	@RequestMapping("/login")
-	public String login(Blogger blogger,HttpServletRequest request){
+	public String login(BloggerDTO blogger,HttpServletRequest request){
 		Subject subject=SecurityUtils.getSubject();
-		UsernamePasswordToken token=new UsernamePasswordToken(blogger.getUserName(), CryptographyUtil.md5(blogger.getPassword(), "java1234"));
+		UsernamePasswordToken token=new UsernamePasswordToken(blogger.getUsername(), CryptographyUtil.md5(blogger.getPassword(), "java1234"));
 		try{
 			subject.login(token); // µÇÂ¼ÑéÖ¤
 			return "redirect:/admin/main.jsp";

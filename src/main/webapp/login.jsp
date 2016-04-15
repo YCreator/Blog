@@ -145,9 +145,9 @@ $(function(){
 });
 
 function checkForm(){
-	var userName=$("#userName").val();
+	var username=$("#username").val();
 	var password=$("#password").val();
-	if(userName==null||userName==""){
+	if(username==null||username==""){
 		$("#error").html("用户名不能为空！");
 		return false;
 	}
@@ -174,7 +174,7 @@ function checkForm(){
 		</DIV>
 		<P style="padding: 30px 0px 10px; position: relative;">
 			<SPAN class="u_logo"></SPAN>
-			<INPUT id="userName" name="userName" class="ipt" type="text" placeholder="请输入用户名" value="${blogger.userName }"> 
+			<INPUT id="username" name="username" class="ipt" type="text" placeholder="请输入用户名" value="${blogger.username }"> 
 	    </P>
 		<P style="position: relative;">
 			<SPAN class="p_logo"></SPAN>         

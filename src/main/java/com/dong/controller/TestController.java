@@ -21,12 +21,6 @@ public class TestController {
 	
 	@RequestMapping("/test")
 	public void test(HttpServletRequest request,HttpServletResponse response) throws Exception {
-		/*JSONObject result=new JSONObject();
-		JsonConfig jsonConfig=new JsonConfig();
-		jsonConfig.registerJsonValueProcessor(java.util.Date.class, new DateJsonValueProcessor("yyyy-MM-dd"));
-		JSONArray jsonArray=JSONArray.fromObject(blogApplication.findAll(),jsonConfig);
-		result.put("rows", jsonArray);
-		System.out.println(result.toString()+"==================>");*/
 		ResponseUtil.write(response, new Gson().toJson(bloggerApplication.get(1L)));
 	}
 

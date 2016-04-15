@@ -2,6 +2,7 @@ package com.dong.realm;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -45,7 +46,7 @@ public class MyRealm extends AuthorizingRealm{
 		BloggerDTO bloggerDTO = bloggerApplication.findByUsername(userName);
 		if (bloggerDTO != null) {
 			SecurityUtils.getSubject().getSession().setAttribute("currentUser", bloggerDTO); // 当前用户信息存到session中
-			AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(bloggerDTO.getUserName(),bloggerDTO.getPassword(),"xx");
+			AuthenticationInfo authcInfo=new SimpleAuthenticationInfo(bloggerDTO.getUsername(),bloggerDTO.getPassword(),"xx");
 			return authcInfo;
 		} else {
 			return null;

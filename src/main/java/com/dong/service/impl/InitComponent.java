@@ -15,9 +15,11 @@ import org.springframework.stereotype.Component;
 
 import com.dong.application.dto.BlogDTO;
 import com.dong.application.dto.BlogTypeDTO;
+import com.dong.application.dto.BloggerDTO;
 import com.dong.application.dto.LinkDTO;
 import com.dong.service.BlogApplication;
 import com.dong.service.BlogTypeApplication;
+import com.dong.service.BloggerApplication;
 import com.dong.service.LinkApplication;
 
 /**
@@ -54,6 +56,11 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 		BlogTypeApplication blogTypeApplication = (BlogTypeApplication) applicationContext.getBean("blogTypeApplication");
 		List<BlogTypeDTO> typeList = blogTypeApplication.findAll(); // 查询博客类别以及博客的数量
 		application.setAttribute("blogTypeCountList", typeList);
+		
+		BloggerApplication bloggerApplication = (BloggerApplication) applicationContext.getBean("bloggerApplication");
+		BloggerDTO blogger = bloggerApplication.get(1L);
+		blogger.setPassword(null);
+		application.setAttribute("blogger", blogger);
 		
 		/*BloggerService bloggerService=(BloggerService) applicationContext.getBean("bloggerService");
 		Blogger blogger=bloggerService.find(); // 查询博主信息

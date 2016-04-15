@@ -9,8 +9,12 @@ import java.io.Serializable;
  */
 public class BloggerDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7309038640229159183L;
 	private Long id; // 编号
-	private String userName; // 用户名
+	private String username; // 用户名
 	private String password; // 密码
 	private String nickName; // 昵称
 	private String sign; // 个性签名
@@ -23,11 +27,11 @@ public class BloggerDTO implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public String getPassword() {
 		return password;

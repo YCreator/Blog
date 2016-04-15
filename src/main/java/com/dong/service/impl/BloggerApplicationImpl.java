@@ -1,10 +1,11 @@
 package com.dong.service.impl;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.dayatang.domain.InstanceFactory;
-import org.dayatang.querychannel.QueryChannelService;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dong.application.dto.BloggerDTO;
 import com.dong.domain.Blogger;
 import com.dong.service.BloggerApplication;
+import com.google.gson.Gson;
 
 @Service("bloggerApplication")
 @Transactional
@@ -29,6 +31,7 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 		return bloggerDTO;
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BloggerDTO> findAll() {
 		return null;
 	}
@@ -58,11 +61,12 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BloggerDTO findByUsername(String username) {
-		String jpql = "select _blogger from Blogger _blogger where _blogger.username= ?username";
+		String jpql = "select _blogger from Blogger _blogger where _blogger.username= '" + username + "'";
 		Blogger blogger = (Blogger) this.getQueryChannelService()
-				.createJpqlQuery(jpql).addParameter("username", username).singleResult();
+				.createJpqlQuery(jpql).singleResult();
 		BloggerDTO bloggerDTO = new BloggerDTO();
 		try {
+			Logger.getLogger(BloggerApplicationImpl.class).debug(new Gson().toJson(blogger));
 			BeanUtils.copyProperties(bloggerDTO,  blogger);
 		} catch (Exception e) {
 			e.printStackTrace();
