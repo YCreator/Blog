@@ -1,9 +1,11 @@
 package com.dong.service.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.dayatang.utils.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,13 +58,17 @@ public class BlogTypeApplicationImpl extends BaseApplicationImpl implements Blog
 		return t;
 	}
 
-	public void update(BlogTypeDTO t) {
+	public boolean update(BlogTypeDTO t) {
 		BlogType bt = BlogType.get(BlogType.class, t.getId());
+		boolean isSuccess;
 		try {
 			BeanUtils.copyProperties(bt, t);
+			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
+			isSuccess = false;
 		}	
+		return isSuccess;
 	}
 
 	public void remove(Long pk) {
@@ -75,6 +81,29 @@ public class BlogTypeApplicationImpl extends BaseApplicationImpl implements Blog
 			BlogType bt = BlogType.load(BlogType.class, pks[i]);
 			bt.remove();
 		}
+	}
+
+	public Page<BlogTypeDTO> getPage(BlogTypeDTO dto, int currentPage,
+			int pageSize) {
+		List<BlogTypeDTO> dtos = new ArrayList<BlogTypeDTO>();
+		@SuppressWarnings("unchecked")
+		Page<BlogType> page = this.getQueryChannelService()
+				.createJpqlQuery("select _blogType from BlogType _blogType").setPage(currentPage, pageSize).pagedList();
+		List<BlogType> list = page.getData();
+		for (BlogType type : list) {
+			BlogTypeDTO d = new BlogTypeDTO();
+			try {
+				BeanUtils.copyProperties(d, type);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			dtos.add(d);
+		}
+		return new Page<BlogTypeDTO>(page.getStart(), page.getResultCount(), pageSize, dtos);
+	}
+
+	public BigInteger getTotal() {
+		return (BigInteger) this.getQueryChannelService().createJpqlQuery("select count(*) from BlogType _blogType").singleResult() ;
 	}
 
 }

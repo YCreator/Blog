@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.dong.application.dto.BlogDTO;
 import com.dong.application.dto.BlogTypeDTO;
-import com.dong.entity.PageBean;
+import com.dong.application.dto.PageBean;
 import com.dong.service.BlogApplication;
 import com.dong.util.PageUtil;
 import com.dong.util.StringUtil;
@@ -33,8 +33,6 @@ import com.dong.util.StringUtil;
 @RequestMapping("/")
 public class IndexController {
 
-	/*@Resource
-	private BlogService blogService;*/
 	@Resource
 	private BlogApplication blogApplication;
 	
@@ -114,56 +112,6 @@ public class IndexController {
 		mav.setViewName("mainTemp");
 		return mav;
 	}
-	/*
-	@RequestMapping("/index")
-	public ModelAndView staticIndex(@RequestParam(value="page",required=false)String page,@RequestParam(value="typeId",required=false)String typeId,@RequestParam(value="releaseDateStr",required=false)String releaseDateStr,HttpServletRequest request) throws Exception {
-		ModelAndView mav=new ModelAndView();
-		if(StringUtil.isEmpty(page)){
-			page="1";
-		}
-		PageBean pageBean=new PageBean(Integer.parseInt(page),10);
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("start", pageBean.getStart());
-		map.put("size", pageBean.getPageSize());
-		map.put("typeId", typeId);
-		map.put("releaseDateStr", releaseDateStr);
-		List<Blog> blogList=blogService.list(map);
-		for(Blog blog:blogList){
-			List<String> imagesList=blog.getImagesList();
-			String blogInfo=blog.getContent();
-			Document doc=Jsoup.parse(blogInfo);
-			Elements jpgs=doc.select("img[src$=.jpg]"); //　查找扩展名是jpg的图片
-			for(int i=0;i<jpgs.size();i++){
-				Element jpg=jpgs.get(i);
-				imagesList.add(jpg.toString());
-				if(i==2){
-					break;
-				}
-			}
-		}
-		mav.addObject("blogList", blogList);
-		map.put("start", 0);
-		map.put("size", 6);
-		map.put("orderType", "clickHit");
-		List<Blog> clickBlogs = blogService.orderTypeList(map);
-		mav.addObject("clickBlogs", clickBlogs);
-		map.put("orderType", "releaseDate");
-		List<Blog> dateBlogs = blogService.orderTypeList(map);
-		mav.addObject("dateBlogs", dateBlogs);
-		StringBuffer param=new StringBuffer(); // 查询参数
-		if(StringUtil.isNotEmpty(typeId)){
-			param.append("typeId="+typeId+"&");
-		}
-		if(StringUtil.isNotEmpty(releaseDateStr)){
-			param.append("releaseDateStr="+releaseDateStr+"&");
-		}
-		mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html", blogService.getTotal(map), Integer.parseInt(page), 10, param.toString()));
-		mav.addObject("pageTitle","Dong博客系统");
-		mav.addObject("mainPage", "foreground/myblog/home.jsp");
-		mav.addObject("listPage", "list.jsp");
-		mav.setViewName("index");
-		return mav;
-	}*/
 	
 	/**
 	 * 请求主页
@@ -197,8 +145,12 @@ public class IndexController {
 		if(StringUtil.isNotEmpty(releaseDateStr)){
 			param.append("releaseDateStr="+releaseDateStr+"&");
 		}
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (typeId != null && !typeId.equals("")) {
+			params.put("typeId", typeId);
+		}
 		mav.addObject("pageCode",PageUtil.genPagination(request.getContextPath()+"/index.html",blogApplication
-				.count(typeId != null && !typeId.equals("") ? Long.valueOf(typeId) : null), Integer.parseInt(page), 10, param.toString()));
+				.getTotal(params).longValue(), Integer.parseInt(page), 10, param.toString()));
 		mav.addObject("pageTitle","Dong博客系统");
 		mav.addObject("mainPage", "foreground/myblog/home.jsp");
 		mav.addObject("listPage", "list.jsp");

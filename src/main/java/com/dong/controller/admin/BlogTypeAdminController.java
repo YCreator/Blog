@@ -7,18 +7,19 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.dong.application.BlogService;
-import com.dong.application.BlogTypeService;
-import com.dong.entity.BlogType;
-import com.dong.entity.PageBean;
+import com.dong.application.dto.BlogDTO;
+import com.dong.application.dto.BlogTypeDTO;
+import com.dong.application.dto.PageBean;
+import com.dong.service.BlogApplication;
+import com.dong.service.BlogTypeApplication;
 import com.dong.util.ResponseUtil;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * 管理员博客类别Controller层
@@ -29,11 +30,11 @@ import net.sf.json.JSONObject;
 @RequestMapping("/admin/blogType")
 public class BlogTypeAdminController {
 
-	/*@Resource*/
-	private BlogTypeService blogTypeService;
+	@Resource
+	private BlogTypeApplication blogTypeApplication;
 	
-	/*@Resource*/
-	private BlogService blogService;
+	@Resource
+	private BlogApplication blogApplication;
 	
 	/**
 	 * 分页查询博客类别信息
@@ -49,8 +50,8 @@ public class BlogTypeAdminController {
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start", pageBean.getStart());
 		map.put("size", pageBean.getPageSize());
-		List<BlogType> blogTypeList=blogTypeService.list(map);
-		Long total=blogTypeService.getTotal(map);
+		List<BlogTypeDTO> blogTypeList=blogTypeApplication.getPage(null, pageBean.getPage(), pageBean.getPageSize()).getData();
+		Long total=blogTypeApplication.getTotal().longValue();
 		JSONObject result=new JSONObject();
 		JSONArray jsonArray=JSONArray.fromObject(blogTypeList);
 		result.put("rows", jsonArray);
@@ -67,15 +68,15 @@ public class BlogTypeAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/save")
-	public String save(BlogType blogType,HttpServletResponse response)throws Exception{
-		int resultTotal=0; // 操作的记录条数
-		if(blogType.getId()==null){
-			resultTotal=blogTypeService.add(blogType);
+	public String save(BlogTypeDTO blogType,HttpServletResponse response)throws Exception{
+		boolean isUpdateSuccess = false;
+		if(blogType.getId() == null){
+			blogType = blogTypeApplication.save(blogType);
 		}else{
-			resultTotal=blogTypeService.update(blogType);
+			isUpdateSuccess = blogTypeApplication.update(blogType);
 		}
 		JSONObject result=new JSONObject();
-		if(resultTotal>0){
+		if(blogType.getId() != null || isUpdateSuccess){
 			result.put("success", true);
 		}else{
 			result.put("success", false);
@@ -96,10 +97,11 @@ public class BlogTypeAdminController {
 		String []idsStr=ids.split(",");
 		JSONObject result=new JSONObject();
 		for(int i=0;i<idsStr.length;i++){
-			if(blogService.getBlogByTypeId(Integer.parseInt(idsStr[i]))>0){
+			List<BlogDTO> dto = blogApplication.getBlogByTypeId(Long.valueOf(idsStr[i]));
+			if(dto.size() > 0){
 				result.put("exist", "博客类别下有博客，不能删除！");
 			}else{
-				blogTypeService.delete(Integer.parseInt(idsStr[i]));				
+				blogTypeApplication.remove(Long.valueOf(idsStr[i]));				
 			}
 		}
 		result.put("success", true);

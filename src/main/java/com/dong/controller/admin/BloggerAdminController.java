@@ -6,19 +6,19 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.dong.application.BloggerService;
-import com.dong.entity.Blogger;
+import com.dong.application.dto.BloggerDTO;
+import com.dong.service.BloggerApplication;
 import com.dong.util.CryptographyUtil;
 import com.dong.util.DateUtil;
 import com.dong.util.ResponseUtil;
-
-import net.sf.json.JSONObject;
 
 /**
  * 管理员博主Controller层
@@ -29,8 +29,8 @@ import net.sf.json.JSONObject;
 @RequestMapping("/admin/blogger")
 public class BloggerAdminController {
 
-	/*@Resource*/
-	private BloggerService bloggerService;
+	@Resource
+	private BloggerApplication bloggerApplication;
 	
 	/**
 	 * 修改博主信息
@@ -42,16 +42,16 @@ public class BloggerAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/save")
-	public String save(@RequestParam("imageFile") MultipartFile imageFile,Blogger blogger,HttpServletRequest request,HttpServletResponse response)throws Exception{
+	public String save(@RequestParam("imageFile") MultipartFile imageFile,BloggerDTO blogger,HttpServletRequest request,HttpServletResponse response)throws Exception{
 		if(!imageFile.isEmpty()){
 			String filePath=request.getServletContext().getRealPath("/");
 			String imageName=DateUtil.getCurrentDateStr()+"."+imageFile.getOriginalFilename().split("\\.")[1];
 			imageFile.transferTo(new File(filePath+"static/userImages/"+imageName));
 			blogger.setImageName(imageName);
 		}
-		int resultTotal=bloggerService.update(blogger);
+		boolean isUpdateSuccess =bloggerApplication.update(blogger);
 		StringBuffer result=new StringBuffer();
-		if(resultTotal>0){
+		if(isUpdateSuccess){
 			result.append("<script language='javascript'>alert('修改成功！');</script>");
 		}else{
 			result.append("<script language='javascript'>alert('修改失败！');</script>");
@@ -68,7 +68,7 @@ public class BloggerAdminController {
 	 */
 	@RequestMapping("/find")
 	public String find(HttpServletResponse response)throws Exception{
-		Blogger blogger=bloggerService.find();
+		BloggerDTO blogger=bloggerApplication.getBlogger();
 		JSONObject jsonObject=JSONObject.fromObject(blogger);
 		ResponseUtil.write(response, jsonObject);
 		return null;
@@ -83,11 +83,11 @@ public class BloggerAdminController {
 	 */
 	@RequestMapping("/modifyPassword")
 	public String modifyPassword(String newPassword,HttpServletResponse response)throws Exception{
-		Blogger blogger=new Blogger();
+		BloggerDTO blogger=new BloggerDTO();
 		blogger.setPassword(CryptographyUtil.md5(newPassword, "java1234"));
-		int resultTotal=bloggerService.update(blogger);
+		boolean isUpdateSuccess=bloggerApplication.update(blogger);
 		JSONObject result=new JSONObject();
-		if(resultTotal>0){
+		if(isUpdateSuccess){
 			result.put("success", true);
 		}else{
 			result.put("success", false);

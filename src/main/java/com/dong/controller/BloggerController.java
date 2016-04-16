@@ -10,9 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.dong.application.BloggerService;
 import com.dong.application.dto.BloggerDTO;
-import com.dong.entity.Blogger;
+import com.dong.service.BloggerApplication;
 import com.dong.util.CryptographyUtil;
 
 /**
@@ -24,8 +23,8 @@ import com.dong.util.CryptographyUtil;
 @RequestMapping("/blogger")
 public class BloggerController {
 
-	/*@Resource*/
-	private BloggerService bloggerService;
+	@Resource
+	private BloggerApplication bloggerApplication;
 	
 	/**
 	 * 用户登录
@@ -56,7 +55,7 @@ public class BloggerController {
 	@RequestMapping("/aboutMe")
 	public ModelAndView aboutMe()throws Exception{
 		ModelAndView mav=new ModelAndView();
-		mav.addObject("blogger",bloggerService.find());
+		mav.addObject("blogger",bloggerApplication.getBlogger());
 		mav.addObject("mainPage", "foreground/blogger/info.jsp");
 		mav.addObject("pageTitle","关于博主_Java开源博客系统");
 		mav.setViewName("mainTemp");

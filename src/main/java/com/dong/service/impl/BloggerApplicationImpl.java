@@ -1,7 +1,5 @@
 package com.dong.service.impl;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -40,13 +38,17 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 		return null;
 	}
 
-	public void update(BloggerDTO t) {
+	public boolean update(BloggerDTO t) {
 		Blogger blogger = Blogger.get(Blogger.class, t.getId());
+		boolean isSuccess;
 		try {
 			BeanUtils.copyProperties(blogger, t);
+			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
+			isSuccess = false;
 		}
+		return isSuccess;
 	}
 
 	public void remove(Long pk) {
@@ -72,6 +74,10 @@ public class BloggerApplicationImpl extends BaseApplicationImpl implements  Blog
 			e.printStackTrace();
 		}
 		return bloggerDTO;
+	}
+
+	public BloggerDTO getBlogger() {
+		return this.get(1L);
 	}
 
 }

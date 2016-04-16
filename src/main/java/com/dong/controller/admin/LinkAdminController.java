@@ -7,17 +7,19 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dong.application.LinkService;
+import com.dong.application.dto.LinkDTO;
+import com.dong.application.dto.PageBean;
 import com.dong.entity.Link;
-import com.dong.entity.PageBean;
+import com.dong.service.LinkApplication;
 import com.dong.util.ResponseUtil;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * 友情链接Controller层
@@ -29,7 +31,9 @@ import net.sf.json.JSONObject;
 public class LinkAdminController {
 	
 	/*@Resource*/
-	private LinkService linkService;
+	//private LinkService linkService;
+	@Resource
+	private LinkApplication linkApplication;
 	
 	/**
 	 * 分页查询友情链接信息
@@ -42,11 +46,12 @@ public class LinkAdminController {
 	@RequestMapping("/list")
 	public String list(@RequestParam(value="page",required=false)String page,@RequestParam(value="rows",required=false)String rows,HttpServletResponse response)throws Exception{
 		PageBean pageBean=new PageBean(Integer.parseInt(page),Integer.parseInt(rows));
-		Map<String,Object> map=new HashMap<String,Object>();
+		/*Map<String,Object> map=new HashMap<String,Object>();
 		map.put("start", pageBean.getStart());
-		map.put("size", pageBean.getPageSize());
-		List<Link> linkList=linkService.list(map);
-		Long total=linkService.getTotal(map);
+		map.put("size", pageBean.getPageSize());*/
+		List<LinkDTO> linkList = linkApplication.getPage(pageBean.getPage(), pageBean.getPageSize()).getData();
+		//List<Link> linkList=linkService.list(map);
+		Long total=linkApplication.getTotal().longValue();
 		JSONObject result=new JSONObject();
 		JSONArray jsonArray=JSONArray.fromObject(linkList);
 		result.put("rows", jsonArray);
@@ -63,15 +68,15 @@ public class LinkAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/save")
-	public String save(Link link,HttpServletResponse response)throws Exception{
-		int resultTotal=0; // 操作的记录条数
+	public String save(LinkDTO link,HttpServletResponse response)throws Exception{
+		boolean isUpdateSuccess=false; // 操作的记录条数
 		if(link.getId()==null){
-			resultTotal=linkService.add(link);
+			link = linkApplication.save(link);
 		}else{
-			resultTotal=linkService.update(link);
+			isUpdateSuccess=linkApplication.update(link);
 		}
 		JSONObject result=new JSONObject();
-		if(resultTotal>0){
+		if(link.getId() != null || isUpdateSuccess){
 			result.put("success", true);
 		}else{
 			result.put("success", false);
@@ -91,7 +96,7 @@ public class LinkAdminController {
 	public String delete(@RequestParam(value="ids")String ids,HttpServletResponse response)throws Exception{
 		String []idsStr=ids.split(",");
 		for(int i=0;i<idsStr.length;i++){
-			linkService.delete(Integer.parseInt(idsStr[i]));
+			linkApplication.remove(Long.parseLong(idsStr[i]));
 		}
 		JSONObject result=new JSONObject();
 		result.put("success", true);

@@ -29,7 +29,7 @@ public interface BaseApplication<T, PK extends Serializable> {
 	 * 修改数据
 	 * @param t
 	 */
-	void update(T t);
+	boolean update(T t);
 	
 	/**
 	 * 删除单个数据

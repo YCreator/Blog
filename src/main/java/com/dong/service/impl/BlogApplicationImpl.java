@@ -65,13 +65,17 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		return t;
 	}
 
-	public void update(BlogDTO t) {
+	public boolean update(BlogDTO t) {
 		Blog blog = Blog.get(Blog.class, t.getId());
+		boolean isSuccess;
 		try {
 			BeanUtils.copyProperties(blog, t);
+			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
+			isSuccess = false;
 		}
+		return isSuccess;
 	}
 
 	public void remove(Long pk) {
@@ -142,14 +146,16 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int count(Long typeId) {
-		String sql;
-		if (typeId != null) {
-			sql = "SELECT COUNT(*) FROM t_blog WHERE typeId="+typeId;
-		} else {
-			sql = "SELECT COUNT(*) FROM t_blog";
+	public BigInteger getTotal(Map<String, Object> params) {
+		String sql = "SELECT COUNT(*) FROM t_blog";
+		if (params.containsKey("typeId")) { //根据博客类型查询总数
+			sql = sql + " WHERE typeId="+params.get("typeId");
+		} else if (params.containsKey("title")) {
+			sql = sql + " WHERE title LIKE '" + params.get("title") +"'"; //根据关键字查询总数
+		} else if (params.containsKey("releaseDateStr")) {
+			sql = sql + " WHERE DATE_FORMAT(releaseDate, '%Y年%m月')=" + params.get("releaseDateStr"); //根据日期查询总数
 		}
-		return ((BigInteger) this.getQueryChannelService().createSqlQuery(sql).list().get(0)).intValue();
+		return (BigInteger) this.getQueryChannelService().createSqlQuery(sql).list().get(0);
 	}
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -176,4 +182,20 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 		return dto;
 	}
 
+	public List<BlogDTO> getBlogByTypeId(Long typeId) {
+		String jpql = "select _blog from Blog _blog where _blog.blogType.id="+typeId;
+		@SuppressWarnings("unchecked")
+		List<Blog> list = this.getQueryChannelService().createJpqlQuery(jpql).list();
+		List<BlogDTO> dtos = new ArrayList<BlogDTO>();
+		for (Blog blog : list) {
+			BlogDTO dto = new BlogDTO();
+			try {
+				BeanUtils.copyProperties(dto, blog);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			dtos.add(dto);
+		}
+		return dtos;
+	}
 }

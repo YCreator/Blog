@@ -52,13 +52,17 @@ public class LinkApplicationImpl extends BaseApplicationImpl implements LinkAppl
 		return t;
 	}
 
-	public void update(LinkDTO t) {
+	public boolean update(LinkDTO t) {
 		Link link = Link.get(Link.class, t.getId());
+		boolean isSuccess;
 		try {
 			BeanUtils.copyProperties(link, t);
+			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
+			isSuccess = false;
 		}
+		return isSuccess;
 	}
 
 	public void remove(Long pk) {
@@ -91,9 +95,8 @@ public class LinkApplicationImpl extends BaseApplicationImpl implements LinkAppl
 		return new Page<LinkDTO>(page.getStart(), page.getResultCount(), pageSize, dtos);
 	}
 
-	public int getTotal() {
-		
-		return ((BigInteger)this.getQueryChannelService().createJpqlQuery("select count(*) from Link _link").list().get(0)).intValue();
+	public BigInteger getTotal() {
+		return (BigInteger)this.getQueryChannelService().createJpqlQuery("select count(*) from Link _link").singleResult();
 	}
 
 }

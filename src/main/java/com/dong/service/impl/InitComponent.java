@@ -58,7 +58,7 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 		application.setAttribute("blogTypeCountList", typeList);
 		
 		BloggerApplication bloggerApplication = (BloggerApplication) applicationContext.getBean("bloggerApplication");
-		BloggerDTO blogger = bloggerApplication.get(1L);
+		BloggerDTO blogger = bloggerApplication.getBlogger();
 		blogger.setPassword(null);
 		application.setAttribute("blogger", blogger);
 		

@@ -61,9 +61,10 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 		return t;
 	}
 
-	public void update(CommentDTO t) {
+	public boolean update(CommentDTO t) {
 		Comment comment = Comment.get(Comment.class, t.getId());
 		comment.setState(t.getState());
+		return true;
 	}
 
 	public void remove(Long pk) {
@@ -77,12 +78,12 @@ public class CommentApplicationImpl extends BaseApplicationImpl implements Comme
 		}
 	}
 
-	public int getTotal(Map<String, Object> params) {
+	public BigInteger getTotal(Map<String, Object> params) {
 		String jpql = "select count(*) from Comment _comment";
 		if (params != null && params.containsKey("state")) {
 			jpql += String.format(" where _comment.state = %s", params.get("state"));
 		}
-		return ((BigInteger) this.getQueryChannelService().createJpqlQuery(jpql).list().get(0)).intValue();
+		return (BigInteger) this.getQueryChannelService().createJpqlQuery(jpql).list().get(0);
 	}
 
 	public Page<CommentDTO> getPage(CommentDTO dto, int currentPage,

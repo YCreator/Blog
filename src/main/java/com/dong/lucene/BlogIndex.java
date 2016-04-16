@@ -33,7 +33,7 @@ import org.apache.lucene.search.highlight.SimpleSpanFragmenter;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import com.dong.entity.Blog;
+import com.dong.application.dto.BlogDTO;
 import com.dong.util.DateUtil;
 import com.dong.util.StringUtil;
 
@@ -64,7 +64,7 @@ public class BlogIndex {
 	 * Ìí¼Ó²©¿ÍË÷Òý
 	 * @param blog
 	 */
-	public void addIndex(Blog blog)throws Exception{
+	public void addIndex(BlogDTO blog)throws Exception{
 		IndexWriter writer=getWriter();
 		Document doc=new Document();
 		doc.add(new StringField("id",String.valueOf(blog.getId()),Field.Store.YES));
@@ -80,7 +80,7 @@ public class BlogIndex {
 	 * @param blog
 	 * @throws Exception
 	 */
-	public void updateIndex(Blog blog)throws Exception{
+	public void updateIndex(BlogDTO blog)throws Exception{
 		IndexWriter writer=getWriter();
 		Document doc=new Document();
 		doc.add(new StringField("id",String.valueOf(blog.getId()),Field.Store.YES));
@@ -110,7 +110,7 @@ public class BlogIndex {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Blog> searchBlog(String q)throws Exception{
+	public List<BlogDTO> searchBlog(String q)throws Exception{
 		dir=FSDirectory.open(Paths.get("C://lucene"));
 		IndexReader reader = DirectoryReader.open(dir);
 		IndexSearcher is=new IndexSearcher(reader);
@@ -128,11 +128,11 @@ public class BlogIndex {
 		SimpleHTMLFormatter simpleHTMLFormatter=new SimpleHTMLFormatter("<b><font color='red'>","</font></b>");
 		Highlighter highlighter=new Highlighter(simpleHTMLFormatter, scorer);
 		highlighter.setTextFragmenter(fragmenter);  
-		List<Blog> blogList=new LinkedList<Blog>();
+		List<BlogDTO> blogList=new LinkedList<BlogDTO>();
 		for(ScoreDoc scoreDoc:hits.scoreDocs){
 			Document doc=is.doc(scoreDoc.doc);
-			Blog blog=new Blog();
-			blog.setId(Integer.parseInt(doc.get(("id"))));
+			BlogDTO blog=new BlogDTO();
+			blog.setId(Long.valueOf((doc.get(("id")))));
 			blog.setReleaseDateStr(doc.get(("releaseDate")));
 			String title=doc.get("title");
 			String content=StringEscapeUtils.escapeHtml(doc.get("content"));
