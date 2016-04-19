@@ -102,7 +102,7 @@
 				<img alt="logo" src="${pageContext.request.contextPath}/static/mystyle/logo.png">
 			</td>
 			<td valign="bottom" align="right" width="50%">
-				<font size="3">&nbsp;&nbsp;<strong>欢迎：</strong>${currentUser.userName }</font>
+				<font size="3">&nbsp;&nbsp;<strong>欢迎：</strong>${currentUser.username }</font>
 			</td>
 		</tr>
 	</table>
@@ -153,7 +153,7 @@
    	<table cellspacing="8px">
    		<tr>
    			<td>用户名：</td>
-   			<td><input type="text" id="userName" name="userName" readonly="readonly" value="${currentUser.userName }" style="width: 200px"/></td>
+   			<td><input type="text" id="username" name="username" readonly="readonly" value="${currentUser.username }" style="width: 200px"/></td>
    		</tr>
    		<tr>
    			<td>新密码：</td>

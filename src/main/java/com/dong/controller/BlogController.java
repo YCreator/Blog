@@ -1,11 +1,13 @@
 package com.dong.controller;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +57,7 @@ public class BlogController {
 		}
 		mav.addObject("blog", blogDTO);
 		blogDTO.setClickHit(blogDTO.getClickHit()+1); // 博客点击次数加1
-		blogApplication.update(blogDTO);
+		Logger.getLogger(BlogController.class).debug("statu=====================>"+blogApplication.update(blogDTO));
 		CommentDTO commentDTO = new CommentDTO();
 		commentDTO.setBlogId(blogDTO.getId());
 		commentDTO.setState(1); // 查询审核通过的评论
@@ -82,7 +84,12 @@ public class BlogController {
 		mav.addObject("mainPage", "foreground/blog/result.jsp");
 		List<BlogDTO> blogList=blogIndex.searchBlog(q.trim());
 		Integer toIndex=blogList.size()>=Integer.parseInt(page)*10?Integer.parseInt(page)*10:blogList.size();
-		mav.addObject("blogList",blogList.subList((Integer.parseInt(page)-1)*10, toIndex));
+		List<BlogDTO> list = new LinkedList<BlogDTO>();
+		for (int i = (Integer.parseInt(page)-1)*10 ; i < toIndex; i++) {
+			list.add(blogList.get(i));
+		}
+		//mav.addObject("blogList",blogList.subList((Integer.parseInt(page)-1)*10, toIndex));
+		mav.addObject("blogList",list);
 		mav.addObject("pageCode",this.genUpAndDownPageCode(Integer.parseInt(page), blogList.size(), q,10,request.getServletContext().getContextPath()));
 		mav.addObject("q",q);
 		mav.addObject("resultTotal",blogList.size());
