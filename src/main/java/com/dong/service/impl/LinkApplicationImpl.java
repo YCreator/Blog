@@ -6,18 +6,14 @@ import java.util.List;
 import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.log4j.Logger;
 import org.dayatang.utils.Page;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import sun.rmi.runtime.Log;
 
 import com.dong.application.dto.LinkDTO;
 import com.dong.domain.Link;
 import com.dong.service.LinkApplication;
 
-/*@Service("linkApplication")*/
 @Named
 @Transactional
 public class LinkApplicationImpl extends BaseApplicationImpl implements LinkApplication {
@@ -52,14 +48,7 @@ public class LinkApplicationImpl extends BaseApplicationImpl implements LinkAppl
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		try {
-			link.save();
-			Logger.getLogger(LinkApplication.class).debug("===============>"+link.getId());
-		} catch(Exception e) {
-			e.printStackTrace();
-			Logger.getLogger(LinkApplication.class).debug("===============>id=0");
-		}
-		
+		link.save();
 		t.setId(link.getId());
 		return t;
 	}

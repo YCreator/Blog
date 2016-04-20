@@ -20,7 +20,6 @@ import com.dong.domain.Blog;
 import com.dong.domain.BlogType;
 import com.dong.service.BlogApplication;
 
-/*@Service("blogApplication")*/
 @Named
 @Transactional()
 public class BlogApplicationImpl extends BaseApplicationImpl implements BlogApplication {
@@ -70,12 +69,9 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 
 	public boolean update(BlogDTO t) {
 		Blog blog = Blog.get(Blog.class, t.getId());
-		log.debug("t=================="+t.getClickHit());
-		log.debug("blog=================="+blog.getClickHit());
 		boolean isSuccess;
 		try {
 			BeanUtils.copyProperties(blog, t);
-			log.debug("blog2=================="+blog.getClickHit());
 			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
