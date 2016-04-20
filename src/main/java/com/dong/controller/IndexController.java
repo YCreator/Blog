@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.dayatang.utils.Page;
@@ -33,7 +33,8 @@ import com.dong.util.StringUtil;
 @RequestMapping("/")
 public class IndexController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BlogApplication blogApplication;
 	
 	

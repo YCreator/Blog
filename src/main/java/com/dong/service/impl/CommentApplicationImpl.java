@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Named;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.dayatang.utils.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,8 @@ import com.dong.application.dto.CommentDTO;
 import com.dong.domain.Comment;
 import com.dong.service.CommentApplication;
 
-@Service("commentApplication")
+/*@Service("commentApplication")*/
+@Named
 @Transactional
 public class CommentApplicationImpl extends BaseApplicationImpl implements CommentApplication {
 

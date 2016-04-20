@@ -15,9 +15,20 @@
         http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd  
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">    
 
+	<!-- 使用注解的包，包括子集 -->
+	<!-- <context:component-scan base-package="com.dong.controller" /> -->
+	<context:component-scan base-package="com.dong">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation" expression="javax.inject.Named" /> 
+  		<context:exclude-filter type="annotation" expression="javax.inject.Inject" /> 
+		<!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" /> --> 
+	</context:component-scan> 
 	
-	
+	<!-- 默认的注解映射的支持 --> 
 	<mvc:annotation-driven/>
+	
+	<!-- 对静态资源文件的访问  -->    
+	<mvc:default-servlet-handler/> 
 	
 	<mvc:resources mapping="/static/**" location="/static/"/>
 
@@ -35,7 +46,5 @@
 	    <property name="maxUploadSize" value="10000000"/>
 
 	</bean>
-
-	<!-- 使用注解的包，包括子集 -->
-	<context:component-scan base-package="com.dong.controller" />
+	
 </beans>  

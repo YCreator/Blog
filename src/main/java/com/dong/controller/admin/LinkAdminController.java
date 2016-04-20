@@ -1,10 +1,8 @@
 package com.dong.controller.admin;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -14,10 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.dong.application.LinkService;
 import com.dong.application.dto.LinkDTO;
 import com.dong.application.dto.PageBean;
-import com.dong.entity.Link;
 import com.dong.service.LinkApplication;
 import com.dong.util.ResponseUtil;
 
@@ -32,7 +28,8 @@ public class LinkAdminController {
 	
 	/*@Resource*/
 	//private LinkService linkService;
-	@Resource
+	/*@Resource*/
+	@Inject
 	private LinkApplication linkApplication;
 	
 	/**

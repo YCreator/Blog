@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.dayatang.domain.InstanceFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -32,42 +33,75 @@ public class InitComponent implements ServletContextListener,ApplicationContextA
 
 	private static ApplicationContext applicationContext;
 	
+	private BlogApplication blogApplication;
+	private LinkApplication linkApplication;
+	private BlogTypeApplication blogTypeApplication;
+	private BloggerApplication bloggerApplication;
+	
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		// TODO Auto-generated method stub
 		this.applicationContext=applicationContext;
+	}
+	
+	private BlogApplication getBlogApplication() {
+		if (blogApplication == null) {
+			blogApplication = InstanceFactory.getInstance(BlogApplication.class);
+		}
+		return blogApplication;
+	}
+	
+	private LinkApplication getLinkApplication() {
+		if (linkApplication == null) {
+			linkApplication = InstanceFactory.getInstance(LinkApplication.class);
+		}
+		return linkApplication;
+	}
+
+	private BlogTypeApplication getBlogTypeApplication() {
+		if (blogTypeApplication == null) {
+			blogTypeApplication = InstanceFactory.getInstance(BlogTypeApplication.class);
+		}
+		return blogTypeApplication;
+	}
+
+	private BloggerApplication getBloggerApplication() {
+		if (bloggerApplication == null) {
+			bloggerApplication = InstanceFactory.getInstance(BloggerApplication.class);
+		}
+		return bloggerApplication;
 	}
 
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		ServletContext application=servletContextEvent.getServletContext();
 		
-		BlogApplication blogApplication = (BlogApplication) applicationContext.getBean("blogApplication");
+		//BlogApplication blogApplication = (BlogApplication) applicationContext.getBean("blogApplication");
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("orderType", "clickHit");
-		List<BlogDTO> clickBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询点击量最高的前六篇博客
+		List<BlogDTO> clickBlogs = getBlogApplication().pageQuery(params, 0, 6).getData(); //查询点击量最高的前六篇博客
 		application.setAttribute("clickBlogs", clickBlogs);
 		params.put("orderType", "releaseDate");
-		List<BlogDTO> dateBlogs = blogApplication.pageQuery(params, 0, 6).getData(); //查询最新的六篇博客
+		List<BlogDTO> dateBlogs = getBlogApplication().pageQuery(params, 0, 6).getData(); //查询最新的六篇博客
 		application.setAttribute("dateBlogs", dateBlogs);
 		
-		LinkApplication linkApplication = (LinkApplication) applicationContext.getBean("linkApplication");
-		List<LinkDTO> linkList = linkApplication.findAll(); // 查询所有的友情链接信息
+		//LinkApplication linkApplication = (LinkApplication) applicationContext.getBean("linkApplication");
+		List<LinkDTO> linkList = getLinkApplication().findAll(); // 查询所有的友情链接信息
 		application.setAttribute("linkList", linkList);
 		
-		BlogTypeApplication blogTypeApplication = (BlogTypeApplication) applicationContext.getBean("blogTypeApplication");
-		List<BlogTypeDTO> typeList = blogTypeApplication.findAll(); // 查询博客类别以及博客的数量
+		//BlogTypeApplication blogTypeApplication = (BlogTypeApplication) applicationContext.getBean("blogTypeApplication");
+		List<BlogTypeDTO> typeList = getBlogTypeApplication().findAll(); // 查询博客类别以及博客的数量
 		application.setAttribute("blogTypeCountList", typeList);
 		
-		BloggerApplication bloggerApplication = (BloggerApplication) applicationContext.getBean("bloggerApplication");
-		BloggerDTO blogger = bloggerApplication.getBlogger();
+		//BloggerApplication bloggerApplication = (BloggerApplication) applicationContext.getBean("bloggerApplication");
+		BloggerDTO blogger = getBloggerApplication().getBlogger();
 		blogger.setPassword(null);
 		application.setAttribute("blogger", blogger);
 		
-		/*BloggerService bloggerService=(BloggerService) applicationContext.getBean("bloggerService");
-		Blogger blogger=bloggerService.find(); // 查询博主信息
+		//BloggerService bloggerService=(BloggerService) applicationContext.getBean("bloggerService");
+		/*Blogger blogger=bloggerService.find(); // 查询博主信息
 		blogger.setPassword(null);
-		application.setAttribute("blogger", blogger);
+		application.setAttribute("blogger", blogger);*/
 		
-		BlogTypeService blogTypeService=(BlogTypeService) applicationContext.getBean("blogTypeService");
+		/*BlogTypeService blogTypeService=(BlogTypeService) applicationContext.getBean("blogTypeService");
 		List<BlogType> blogTypeCountList=blogTypeService.countList(); // 查询博客类别以及博客的数量
 		application.setAttribute("blogTypeCountList", blogTypeCountList);
 		

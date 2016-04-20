@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -33,7 +33,8 @@ import com.dong.util.StringUtil;
 @RequestMapping("/admin/blog")
 public class BlogAdminController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BlogApplication blogApplication;
 	
 	// ²©¿ÍË÷Òý

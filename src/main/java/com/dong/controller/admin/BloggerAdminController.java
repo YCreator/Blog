@@ -2,7 +2,7 @@ package com.dong.controller.admin;
 
 import java.io.File;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +29,8 @@ import com.dong.util.ResponseUtil;
 @RequestMapping("/admin/blogger")
 public class BloggerAdminController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BloggerApplication bloggerApplication;
 	
 	/**

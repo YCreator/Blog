@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -30,10 +30,12 @@ import com.dong.util.ResponseUtil;
 @RequestMapping("/admin/blogType")
 public class BlogTypeAdminController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BlogTypeApplication blogTypeApplication;
 	
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BlogApplication blogApplication;
 	
 	/**

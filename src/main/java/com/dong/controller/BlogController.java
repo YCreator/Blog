@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -30,10 +30,12 @@ import com.dong.util.StringUtil;
 @RequestMapping("/blog")
 public class BlogController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BlogApplication blogApplication;
 	
-	@Resource
+	/*@Resource*/
+	@Inject
 	private CommentApplication commentApplication;
 		
 	// ²©¿ÍË÷Òý

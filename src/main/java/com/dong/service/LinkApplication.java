@@ -10,6 +10,6 @@ public interface LinkApplication extends BaseApplication<LinkDTO, Long> {
 	
 	Page<LinkDTO> getPage(int currentPage, int pageSize);
 	
-	BigInteger getTotal();
+	Long getTotal();
 
 }

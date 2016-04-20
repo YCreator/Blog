@@ -2,9 +2,10 @@ package com.dong.service.impl;
 
 import java.util.List;
 
+import javax.inject.Named;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,8 @@ import com.dong.domain.Blogger;
 import com.dong.service.BloggerApplication;
 import com.google.gson.Gson;
 
-@Service("bloggerApplication")
+/*@Service("bloggerApplication")*/
+@Named
 @Transactional
 public class BloggerApplicationImpl extends BaseApplicationImpl implements  BloggerApplication {
 	

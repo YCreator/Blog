@@ -4,9 +4,10 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Named;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.dayatang.utils.Page;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,8 @@ import com.dong.application.dto.BlogTypeDTO;
 import com.dong.domain.BlogType;
 import com.dong.service.BlogTypeApplication;
 
-@Service("blogTypeApplication")
+/*@Service("blogTypeApplication")*/
+@Named
 @Transactional
 public class BlogTypeApplicationImpl extends BaseApplicationImpl implements BlogTypeApplication {
 

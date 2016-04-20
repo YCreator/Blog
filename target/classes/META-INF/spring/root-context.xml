@@ -12,10 +12,24 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
     
+    <!-- <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:META-INF/props/database.properties</value>
+        </property>
+    </bean> -->
+    
+    <context:annotation-config />
+    
+    <!-- 自动扫描 -->
+	<context:component-scan base-package="com.dong.service" />
+	
     <!-- 自动装配注解Bean后置处理器 -->
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+	
 	<!-- JPA注解Bean后置处理器 -->  
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />  
+    
 	<!-- JPA实体管理工厂的配置 -->  
     <bean id="entityManagerFactory"  class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource" />  
@@ -30,18 +44,47 @@
         </props>
         </property>
     </bean>
+    
     <!--指定实现JPA的适配器--> 
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="database" value="MYSQL" />
+        <property name="showSql" value="true" />
+        <property name="generateDdl" value="true" />
         <property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect" /> 
     </bean>
     
     <!-- 配置数据源 -->
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+		<!-- <property name="driverClassName" value="${db.jdbc.driver}" />
+		<property name="url" value="${db.jdbc.connection.url}"/>
+		<property name="username" value="${db.jdbc.username}"/>
+		<property name="password" value="${db.jdbc.password}"/> -->
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/db_blog3?useUnicode=true&amp;characterEncoding=UTF-8"/>
 		<property name="username" value="admin"/>
 		<property name="password" value="admin"/>
+		
+		<!-- <property name="filters"><value>stat</value></property>
+
+        <property name="maxActive"><value>20</value></property>
+        <property name="initialSize"><value>1</value></property>
+        <property name="maxWait"><value>60000</value></property>
+        <property name="minIdle"><value>1</value></property>
+
+        <property name="timeBetweenEvictionRunsMillis"><value>60000</value></property>
+        <property name="minEvictableIdleTimeMillis"><value>300000</value></property>
+
+        <property name="validationQuery"><value>SELECT 'x'</value></property>
+        <property name="testWhileIdle"><value>true</value></property>
+        <property name="testOnBorrow"><value>false</value></property>
+        <property name="testOnReturn"><value>false</value></property>
+
+        <property name="poolPreparedStatements"><value>true</value></property>
+        <property name="maxOpenPreparedStatements"><value>20</value></property> -->
 	</bean>
+	
+	<!-- 开启Spring提供的基于注解的声明式事务管理 -->  
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	
 	<!-- Jpa 事务配置 --> 
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -51,26 +94,10 @@
 	
 	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
 	
-	<bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	
-	<bean id="transactionTemplate"
-		class="org.springframework.transaction.support.TransactionTemplate">
-		<property name="timeout" value="300" />
-		<property name="transactionManager" ref="transactionManager" />
-	</bean>
-	
-	<!-- 开启Spring提供的基于注解的声明式事务管理 -->  
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
-    <context:annotation-config />
-    
-   <!-- 自动扫描 -->
-	<context:component-scan base-package="com.dong.service" />
-	
-	<!-- <bean id="defaultEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" scope="prototype">
-        <property name="persistenceUnitName" value="entityManagerFactory" />
-    </bean> -->
+	<!-- 一定要配置这个，否则在使用事务注解@Transactional的时候不起作用，即只能查询不能更新数据库数据 -->
+	<bean id="defaultEntityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean" scope="prototype">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
 	
 	<bean id="repository" class="org.dayatang.persistence.jpa.EntityRepositoryJpa">
 		<constructor-arg name="entityManagerFactory" ref="entityManagerFactory" />
@@ -80,6 +107,14 @@
     <bean id="queryChannel" class="org.dayatang.querychannel.impl.QueryChannelServiceImpl">
          <constructor-arg name="repository" ref="repository" />
     </bean>
-    
+
+	<bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="timeout" value="300" />
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>    
 
 </beans>

@@ -5,35 +5,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Named;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.dayatang.utils.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dong.application.dto.BlogDTO;
 import com.dong.application.dto.BlogTypeDTO;
 import com.dong.domain.Blog;
+import com.dong.domain.BlogType;
 import com.dong.service.BlogApplication;
 
-@Service("blogApplication")
-@Transactional
+/*@Service("blogApplication")*/
+@Named
+@Transactional()
 public class BlogApplicationImpl extends BaseApplicationImpl implements BlogApplication {
 	
 	private static final Logger log = LoggerFactory.getLogger(BlogApplicationImpl.class);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BlogDTO get(Long pk) {
-		Blog blog = Blog.get(Blog.class, pk);
+		Blog blog = Blog.load(Blog.class, pk);
 		BlogDTO blogDTO = new BlogDTO();
 		try {
 			BeanUtils.copyProperties(blogDTO, blog);	
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		blogDTO.setId(blog.getId());
+		blogDTO.setId((java.lang.Long)blog.getId());
 		return blogDTO;
 	}
 
@@ -67,9 +70,12 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 
 	public boolean update(BlogDTO t) {
 		Blog blog = Blog.get(Blog.class, t.getId());
+		log.debug("t=================="+t.getClickHit());
+		log.debug("blog=================="+blog.getClickHit());
 		boolean isSuccess;
 		try {
 			BeanUtils.copyProperties(blog, t);
+			log.debug("blog2=================="+blog.getClickHit());
 			isSuccess = true;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -183,9 +189,7 @@ public class BlogApplicationImpl extends BaseApplicationImpl implements BlogAppl
 	}
 
 	public List<BlogDTO> getBlogByTypeId(Long typeId) {
-		String jpql = "select _blog from Blog _blog where _blog.blogType.id="+typeId;
-		@SuppressWarnings("unchecked")
-		List<Blog> list = this.getQueryChannelService().createJpqlQuery(jpql).list();
+		List<Blog> list = Blog.findByProperty(Blog.class, "blogType", BlogType.load(BlogType.class, typeId));
 		List<BlogDTO> dtos = new ArrayList<BlogDTO>();
 		for (Blog blog : list) {
 			BlogDTO dto = new BlogDTO();

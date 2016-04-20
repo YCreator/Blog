@@ -1,6 +1,6 @@
 package com.dong.controller;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.shiro.SecurityUtils;
@@ -23,7 +23,8 @@ import com.dong.util.CryptographyUtil;
 @RequestMapping("/blogger")
 public class BloggerController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private BloggerApplication bloggerApplication;
 	
 	/**

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
@@ -29,7 +29,8 @@ import com.dong.util.ResponseUtil;
 @RequestMapping("/admin/comment")
 public class CommentAdminController {
 
-	@Resource
+	/*@Resource*/
+	@Inject
 	private CommentApplication commentApplication;
 	
 	/**
